@@ -15,11 +15,8 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="index" />
-
         <Stack.Screen name="video/[id]" />
-
         <Stack.Screen name="video/edit/[id]" />
-
         <Stack.Screen
           name="modal/crop"
           options={{

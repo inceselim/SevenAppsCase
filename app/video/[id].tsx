@@ -1,0 +1,89 @@
+import { HeaderMenu } from "@/components/HeaderMenu";
+import { PrimaryButton } from "@/components/PrimaryButton";
+import { SecondaryButton } from "@/components/SecondaryButton";
+import { useVideoStore } from "@/features/video/store/video.store";
+import { router, useLocalSearchParams } from "expo-router";
+import { Pencil, Share2, Trash2 } from "lucide-react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function VideoDetailScreen() {
+    const { id } = useLocalSearchParams<{ id: string }>();
+
+    const video = useVideoStore((state: any) =>
+        state.videos.find((item: any) => item.id === id)
+    );
+
+    if (!video) {
+        return (
+            <View className="flex-1 bg-background items-center justify-center px-5">
+                <Text className="text-lg font-bold text-textPrimary">
+                    Video Not Found
+                </Text>
+
+                <TouchableOpacity
+                    onPress={() => router.back()}
+                    className="mt-5 h-12 px-6 rounded-xl bg-primary items-center justify-center"
+                >
+                    <Text className="text-white font-semibold">
+                        Go Back
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    return (
+        <SafeAreaView className="flex-1 bg-background px-5">
+            <HeaderMenu
+                title="Video Details"
+                rightElement={
+                    <TouchableOpacity
+                        onPress={() => { console.log("Delete Eklenecek") }}
+                        className="h-10 w-10 items-center justify-center rounded-full bg-red-50"
+                    >
+                        <Trash2
+                            size={22}
+                            color="#EF4444"
+                        />
+                    </TouchableOpacity>
+                }
+            />
+            <View className="flex-1">
+                <Text className="text-2xl font-bold text-textPrimary">
+                    {video.name}
+                </Text>
+
+                <View className="h-56 rounded-2xl bg-slate-200 items-center justify-center mt-6">
+                    <Text className="text-5xl">▶</Text>
+                </View>
+
+                <Text className="text-lg font-bold text-textPrimary mt-6">
+                    Description
+                </Text>
+
+                <Text className="text-textSecondary mt-2">
+                    {video.description}
+                </Text>
+            </View>
+
+            <View className="pb-8 flex-row gap-3">
+                <View className="flex-1">
+                    <SecondaryButton
+                        text="Edit Video"
+                        icon={<Pencil size={18} color="#6366F1" />}
+                        onPress={() => router.push(`/video/edit/${video.id}`)}
+                    />
+                </View>
+
+                <View className="flex-1 ml-2">
+                    <PrimaryButton
+                        text="Share"
+                        icon={<Share2 size={18} color="#fff" />}
+                        onPress={() => { }}
+                    />
+                </View>
+            </View>
+        </SafeAreaView>
+    );
+}
