@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Video } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, ScrollView, Text, TextInput, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CropModalScreen() {
@@ -255,63 +255,68 @@ export default function CropModalScreen() {
                     )}
 
                     {step === 3 && (
-                        <View className="flex-1 pt-8">
-                            <Text className="text-2xl font-extrabold text-textPrimary">
-                                Add Details
-                            </Text>
-
-                            <Text className="mt-4 text-sm font-bold text-primary">
-                                Step 3 / 3
-                            </Text>
-
-                            <Text className="mt-3 text-base leading-6 text-textSecondary">
-                                Add a name and description for your cropped video diary.
-                            </Text>
-
-                            <View className="mt-8">
-                                <Text className="mb-2 text-sm font-bold text-textPrimary">
-                                    Name
+                        <KeyboardAvoidingView
+                            style={{ flex: 1 }}
+                            behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        >
+                            <ScrollView className="flex-1 pt-8">
+                                <Text className="text-2xl font-extrabold text-textPrimary">
+                                    Add Details
                                 </Text>
 
-                                <TextInput
-                                    value={name}
-                                    onChangeText={(value) => {
-                                        setName(value);
-                                        validateField("name", value);
-                                    }}
-                                    placeholder="Video name"
-                                    className="h-14 rounded-2xl border border-border bg-card px-4 text-textPrimary"
-                                />
-                                {errors.name && (
-                                    <Text className="mt-2 text-xs font-semibold text-red-500">
-                                        {errors.name}
-                                    </Text>
-                                )}
-                            </View>
-
-                            <View className="mt-5">
-                                <Text className="mb-2 text-sm font-bold text-textPrimary">
-                                    Description
+                                <Text className="mt-4 text-sm font-bold text-primary">
+                                    Step 3 / 3
                                 </Text>
 
-                                <TextInput
-                                    value={description}
-                                    onChangeText={(value) => {
-                                        setDescription(value);
-                                        validateField("description", value);
-                                    }}
-                                    placeholder="Write a short description"
-                                    multiline
-                                    textAlignVertical="top"
-                                    className="h-40 rounded-2xl border border-border bg-card px-4 py-4 text-textPrimary"
-                                />
-                                {errors.description && (
-                                    <Text className="mt-2 text-xs font-semibold text-red-500">
-                                        {errors.description}
+                                <Text className="mt-3 text-base leading-6 text-textSecondary">
+                                    Add a name and description for your cropped video diary.
+                                </Text>
+
+                                <View className="mt-8">
+                                    <Text className="mb-2 text-sm font-bold text-textPrimary">
+                                        Name
                                     </Text>
-                                )}
-                            </View>
-                        </View>
+
+                                    <TextInput
+                                        value={name}
+                                        onChangeText={(value) => {
+                                            setName(value);
+                                            validateField("name", value);
+                                        }}
+                                        placeholder="Video name"
+                                        className="h-14 rounded-2xl border border-border bg-card px-4 text-textPrimary"
+                                    />
+                                    {errors.name && (
+                                        <Text className="mt-2 text-xs font-semibold text-red-500">
+                                            {errors.name}
+                                        </Text>
+                                    )}
+                                </View>
+
+                                <View className="mt-5">
+                                    <Text className="mb-2 text-sm font-bold text-textPrimary">
+                                        Description
+                                    </Text>
+
+                                    <TextInput
+                                        value={description}
+                                        onChangeText={(value) => {
+                                            setDescription(value);
+                                            validateField("description", value);
+                                        }}
+                                        placeholder="Write a short description"
+                                        multiline
+                                        textAlignVertical="top"
+                                        className="h-40 rounded-2xl border border-border bg-card px-4 py-4 text-textPrimary"
+                                    />
+                                    {errors.description && (
+                                        <Text className="mt-2 text-xs font-semibold text-red-500">
+                                            {errors.description}
+                                        </Text>
+                                    )}
+                                </View>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
                     )}
                 </ScrollView>
 

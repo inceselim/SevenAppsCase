@@ -46,7 +46,6 @@ export default function VideoDetailScreen() {
         // video paylasma
         const videoUri = video?.croppedUri || video?.originalUri;
 
-        console.log("Video URI:", videoUri);
         if (!videoUri) {
             Alert.alert("Error", "Video file not found.");
             return;

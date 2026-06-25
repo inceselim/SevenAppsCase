@@ -18,7 +18,6 @@ export function VideoCard({ video, onPress }: Props) {
     const previewImage = video.thumbnailUri
         ? { uri: video.thumbnailUri }
         : require("@/assets/images/video-placeholder.png");
-    console.log(video)
     return (
         <TouchableOpacity
             onPress={onPress}
