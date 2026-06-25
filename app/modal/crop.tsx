@@ -132,8 +132,7 @@ export default function CropModalScreen() {
                             </Text>
 
                             <Text className="mt-3 text-center text-base leading-6 text-textSecondary">
-                                Choose a video from your gallery to crop a 5-second diary
-                                moment.
+                                Choose a video from your gallery
                             </Text>
 
                             {selectedVideo && (

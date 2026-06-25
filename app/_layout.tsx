@@ -25,7 +25,7 @@ export default function RootLayout() {
             options={{
               presentation: "modal",
             }}
-          />Bilbo Ayrikvadiyi geziyor
+          />
         </Stack>
       </GestureHandlerRootView>
     </QueryClientProvider>
