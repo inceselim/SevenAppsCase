@@ -4,11 +4,12 @@ import { VideoTimeline } from "@/components/video/VideoTimeline";
 import { useTrimVideo } from "@/features/video/hooks/useTrimVideo";
 import { pickVideo } from "@/features/video/hooks/useVideoPicker";
 import { useVideoStore } from "@/features/video/store/video.store";
+import { videoMetadataSchema } from "@/features/video/validation/video-metadata.schema";
 import { router } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Video } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Text, TextInput, View } from "react-native";
+import { Alert, ScrollView, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CropModalScreen() {
@@ -21,6 +22,11 @@ export default function CropModalScreen() {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+
+    const [errors, setErrors] = useState<{
+        name?: string;
+        description?: string;
+    }>({});
 
     const addVideo = useVideoStore((state) => state.addVideo);
     const trimVideoMutation = useTrimVideo();
@@ -45,13 +51,19 @@ export default function CropModalScreen() {
     const handleSaveVideo = async () => {
         if (!selectedVideo) return;
 
-        if (!name.trim()) {
-            Alert.alert("Missing Name", "Please enter a video name.");
-            return;
-        }
+        const validation = videoMetadataSchema.safeParse({
+            name,
+            description,
+        });
 
-        if (!description.trim()) {
-            Alert.alert("Missing Description", "Please enter a video description.");
+        if (!validation.success) {
+            const fieldErrors = validation.error.flatten().fieldErrors;
+
+            setErrors({
+                name: fieldErrors.name?.[0],
+                description: fieldErrors.description?.[0],
+            });
+
             return;
         }
 
@@ -64,8 +76,8 @@ export default function CropModalScreen() {
 
             addVideo({
                 id: Date.now().toString(),
-                name: name.trim(),
-                description: description.trim(),
+                name: validation.data.name,
+                description: validation.data.description,
                 originalUri: selectedVideo.uri,
                 croppedUri,
                 thumbnailUri: selectedVideo.thumbnailUri,
@@ -100,6 +112,31 @@ export default function CropModalScreen() {
         handleSaveVideo();
     };
 
+    const validateField = (
+        field: "name" | "description",
+        value: string
+    ) => {
+        const result = videoMetadataSchema.safeParse({
+            name: field === "name" ? value : name,
+            description: field === "description" ? value : description,
+        });
+
+        if (result.success) {
+            setErrors((prev) => ({
+                ...prev,
+                [field]: undefined,
+            }));
+            return;
+        }
+
+        const fieldErrors = result.error.flatten().fieldErrors;
+
+        setErrors((prev) => ({
+            ...prev,
+            [field]: fieldErrors[field]?.[0],
+        }));
+    };
+
     const bottomButtonText =
         trimVideoMutation.isPending
             ? "Saving..."
@@ -115,8 +152,14 @@ export default function CropModalScreen() {
         <SafeAreaView className="flex-1 bg-background">
             <View className="flex-1 px-5">
                 <HeaderMenu title="Crop Video" />
-
-                <View className="flex-1">
+                <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 24,
+                        flexGrow: 1,
+                    }}
+                >
                     {step === 1 && (
                         <View className="flex-1 items-center justify-center">
                             <View className="h-28 w-28 items-center justify-center rounded-full bg-primary/10">
@@ -232,10 +275,18 @@ export default function CropModalScreen() {
 
                                 <TextInput
                                     value={name}
-                                    onChangeText={setName}
+                                    onChangeText={(value) => {
+                                        setName(value);
+                                        validateField("name", value);
+                                    }}
                                     placeholder="Video name"
                                     className="h-14 rounded-2xl border border-border bg-card px-4 text-textPrimary"
                                 />
+                                {errors.name && (
+                                    <Text className="mt-2 text-xs font-semibold text-red-500">
+                                        {errors.name}
+                                    </Text>
+                                )}
                             </View>
 
                             <View className="mt-5">
@@ -245,16 +296,24 @@ export default function CropModalScreen() {
 
                                 <TextInput
                                     value={description}
-                                    onChangeText={setDescription}
+                                    onChangeText={(value) => {
+                                        setDescription(value);
+                                        validateField("description", value);
+                                    }}
                                     placeholder="Write a short description"
                                     multiline
                                     textAlignVertical="top"
                                     className="h-40 rounded-2xl border border-border bg-card px-4 py-4 text-textPrimary"
                                 />
+                                {errors.description && (
+                                    <Text className="mt-2 text-xs font-semibold text-red-500">
+                                        {errors.description}
+                                    </Text>
+                                )}
                             </View>
                         </View>
                     )}
-                </View>
+                </ScrollView>
 
                 <View className="pb-8">
                     <PrimaryButton
@@ -264,6 +323,6 @@ export default function CropModalScreen() {
                     />
                 </View>
             </View>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }

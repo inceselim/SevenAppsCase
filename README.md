@@ -1,56 +1,302 @@
-# Welcome to your Expo app 👋
+# 📹 Video Diary
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Video Diary, Expo ve React Native kullanılarak geliştirilmiş bir video günlük uygulamasıdır. Kullanıcılar galerilerinden video seçebilir, videonun 5 saniyelik bir bölümünü kırpabilir, başlık ve açıklama ekleyerek kaydedebilirler.
 
-## Get started
+---
 
-1. Install dependencies
+# 🚀 Özellikler
 
-   ```bash
-   npm install
-   ```
+* Galeriden video seçme
+* Videonun 5 saniyelik bölümünü kırpma
+* Video başlığı ekleme
+* Video açıklaması ekleme
+* Kırpılmış videoları kaydetme
+* Video detaylarını görüntüleme
+* Video bilgilerini düzenleme
+* Video silme
+* Video paylaşma
+* Video arama
+* Verileri kalıcı olarak saklama (AsyncStorage)
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+# 🛠 Kullanılan Teknolojiler
 
-In the output, you'll find options to open the app in a
+* Expo
+* React Native
+* TypeScript
+* Expo Router
+* Zustand
+* Zustand Persist
+* AsyncStorage
+* TanStack Query
+* NativeWind
+* Expo Video
+* Expo Image Picker
+* Expo Video Thumbnails
+* expo-trim-video
+* Expo Sharing
+* React Native Gesture Handler
+* React Native Reanimated
+* Lucide React Native
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+# 📦 Kurulum
 
-## Get a fresh project
-
-When you're ready, run:
+Bağımlılıkları yükleyin:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Projeyi başlatın:
 
-### Other setup steps
+```bash
+npx expo start --clear
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+iOS için:
 
-## Learn more
+```bash
+npx expo run:ios
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Android için:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo run:android
+```
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+# 📂 Proje Yapısı
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```text
+app
+├── _layout.tsx
+├── index.tsx
+├── modal
+│   └── crop.tsx
+└── video
+    ├── [id].tsx
+    └── edit
+        └── [id].tsx
+
+src
+├── components
+│   ├── HeaderMenu
+│   ├── PrimaryButton
+│   ├── SecondaryButton
+│   ├── VideoCard
+│   └── VideoTimeline
+│
+├── features
+│   └── video
+│       ├── api
+│       ├── hooks
+│       ├── store
+│       └── types
+│
+└── lib
+```
+
+---
+
+# 🏗 Mimari
+
+Projede **Feature Based Architecture** tercih edilmiştir.
+
+Video ile ilgili tüm işlemler tek bir feature altında toplanmıştır.
+
+```text
+src/features/video
+```
+
+Bu yapı sayesinde;
+
+* İş mantığı
+* API işlemleri
+* State yönetimi
+* Hook'lar
+* Tip tanımları
+
+birbirinden ayrılmıştır.
+
+UI bileşenleri ise tekrar kullanılabilir olacak şekilde `components` klasörü altında bulunmaktadır.
+
+---
+# 🧭 Sayfalar
+
+## Ana Sayfa
+
+* Video listesi
+* Arama
+* Toplam video sayısı
+* Yeni video ekleme
+
+---
+
+## Video Kırpma
+
+3 adımdan oluşmaktadır.
+
+1. Video seçme
+2. 5 saniyelik bölüm seçme
+3. Başlık ve açıklama ekleme
+
+---
+
+## Video Detayı
+
+* Video oynatma
+* Açıklama
+* Düzenleme
+* Paylaşma
+* Silme
+
+---
+
+## Düzenleme
+
+* Başlık güncelleme
+* Açıklama güncelleme
+
+---
+
+# 🗂 State Yönetimi
+
+Projede **Zustand** kullanılmıştır.
+
+Store aşağıdaki işlemleri yönetmektedir.
+
+* Video ekleme
+* Video güncelleme
+* Video silme
+* Video listesini tutma
+
+Persist middleware sayesinde veriler AsyncStorage üzerinde saklanmaktadır.
+
+---
+
+# ❓ Neden Zustand?
+
+Bu proje için Redux yerine Zustand tercih edilmiştir.
+
+Sebepleri:
+
+* Daha az boilerplate kod
+* Öğrenmesi kolay
+* TypeScript desteği güçlü
+* Performanslı
+* Persist desteği kolay
+* Küçük ve orta ölçekli projeler için ideal
+
+---
+
+# ❓ Neden TanStack Query?
+
+Video kırpma işlemi asenkron bir işlemdir.
+
+TanStack Query sayesinde;
+
+* Loading yönetimi
+* Hata yönetimi
+* Mutation yapısı
+* Gelecekte API entegrasyonuna uygun mimari
+
+sağlanmıştır.
+
+UI katmanı ile iş mantığı birbirinden ayrılmıştır.
+
+---
+
+# 📦 Kullanılan Paketler
+
+| Paket                 | Amaç               |
+| --------------------- | ------------------ |
+| Expo Router           | Sayfa yönetimi     |
+| Zustand               | State yönetimi     |
+| TanStack Query        | Asenkron işlemler  |
+| NativeWind            | Stil yönetimi      |
+| AsyncStorage          | Kalıcı veri        |
+| Expo Video            | Video oynatma      |
+| Expo Image Picker     | Video seçme        |
+| Expo Video Thumbnails | Thumbnail üretme   |
+| expo-trim-video       | Video kırpma       |
+| Expo Sharing          | Video paylaşma     |
+| Reanimated            | Animasyon          |
+| Gesture Handler       | Timeline sürükleme |
+
+---
+
+# ⚖ Teknik Tercihler (Trade-offs)
+
+## Zustand + AsyncStorage
+
+Projede SQLite yerine Zustand Persist tercih edilmiştir.
+
+Sebepleri:
+
+* Veri miktarı azdır.
+* İlişkisel veri yapısı bulunmamaktadır.
+* Kurulumu daha kolaydır.
+* Performansı yeterlidir.
+
+SQLite;
+
+* Binlerce kayıt
+* Karmaşık sorgular
+* Filtreleme
+* İndeksleme
+
+gerektiğinde daha uygun olacaktır.
+
+---
+
+## Feature Based Architecture
+
+Dosyalar özellik bazlı ayrılarak ölçeklenebilir bir yapı oluşturulmuştur.
+
+Yeni bir modül eklendiğinde mevcut yapı bozulmadan geliştirme yapılabilir.
+
+---
+
+## Component Yapısı
+
+Tekrar kullanılabilir componentler oluşturularak kod tekrarının önüne geçilmiştir.
+
+Örneğin;
+
+* HeaderMenu
+* PrimaryButton
+* SecondaryButton
+* VideoCard
+* VideoTimeline
+
+birden fazla ekranda kullanılmaktadır.
+
+---
+
+# 🔮 Gelecekte Yapılabilecek Geliştirmeler
+
+* SQLite desteği
+* Cloud senkronizasyonu
+* Kullanıcı girişi
+* Video sıkıştırma
+* Dark Mode
+* Skeleton Loading
+* React Hook Form
+* Zod doğrulama
+* Unit Test
+* E2E Test
+* Swipe To Delete
+* Çoklu video desteği
+
+---
+
+# 👨‍💻 Geliştirici Notu
+
+Bu proje, React Native geliştirme becerilerini göstermek amacıyla hazırlanmış bir case study çalışmasıdır.
+
+Projede temiz mimari, yeniden kullanılabilir bileşenler, modern React Native kütüphaneleri ve ölçeklenebilir bir klasör yapısı kullanılmasına özen gösterilmiştir.
