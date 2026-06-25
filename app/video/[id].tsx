@@ -4,6 +4,7 @@ import { SecondaryButton } from "@/components/SecondaryButton";
 import { useVideoStore } from "@/features/video/store/video.store";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
+import { useVideoPlayer, VideoView } from "expo-video";
 import { Pencil, Share2, Trash2 } from "lucide-react-native";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,7 +15,11 @@ export default function VideoDetailScreen() {
     const video = useVideoStore((state: any) =>
         state.videos.find((item: any) => item.id === id)
     );
+    const videoUri = video.croppedUri || video.originalUri;
 
+    const player = useVideoPlayer(videoUri, (player) => {
+        player.loop = true;
+    });
     const deleteVideo = useVideoStore((state: any) => state.deleteVideo);
     const handleDelete = () => {
         Alert.alert(
@@ -103,8 +108,15 @@ export default function VideoDetailScreen() {
                     {video.name}
                 </Text>
 
-                <View className="h-56 rounded-2xl bg-slate-200 items-center justify-center mt-6">
-                    <Text className="text-5xl">▶</Text>
+                <View className="mt-6 h-64 overflow-hidden rounded-3xl bg-black">
+                    <VideoView
+                        player={player}
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                        }}
+                        nativeControls
+                    />
                 </View>
 
                 <Text className="text-lg font-bold text-textPrimary mt-6">
