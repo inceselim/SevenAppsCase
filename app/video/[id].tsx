@@ -3,8 +3,9 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { SecondaryButton } from "@/components/SecondaryButton";
 import { useVideoStore } from "@/features/video/store/video.store";
 import { router, useLocalSearchParams } from "expo-router";
+import * as Sharing from "expo-sharing";
 import { Pencil, Share2, Trash2 } from "lucide-react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VideoDetailScreen() {
@@ -13,6 +14,52 @@ export default function VideoDetailScreen() {
     const video = useVideoStore((state: any) =>
         state.videos.find((item: any) => item.id === id)
     );
+
+    const deleteVideo = useVideoStore((state: any) => state.deleteVideo);
+    const handleDelete = () => {
+        Alert.alert(
+            "Delete Video",
+            "Are you sure you want to delete this video?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => {
+                        deleteVideo(video.id);
+                        router.back();
+                    },
+                },
+            ]
+        );
+    };
+
+    const handleShare = async () => {
+        // video paylasma
+        const videoUri = video?.croppedUri || video?.originalUri;
+
+        console.log("Video URI:", videoUri);
+        if (!videoUri) {
+            Alert.alert("Error", "Video file not found.");
+            return;
+        }
+
+        const isAvailable = await Sharing.isAvailableAsync();
+
+        if (!isAvailable) {
+            Alert.alert("Error", "Sharing is not available on this device.");
+            return;
+        }
+
+        await Sharing.shareAsync(videoUri, {
+            mimeType: "video/mp4",
+            dialogTitle: video.name,
+            UTI: "public.movie",
+        });
+    };
 
     if (!video) {
         return (
@@ -39,7 +86,9 @@ export default function VideoDetailScreen() {
                 title="Video Details"
                 rightElement={
                     <TouchableOpacity
-                        onPress={() => { console.log("Delete Eklenecek") }}
+                        onPress={() => {
+                            handleDelete()
+                        }}
                         className="h-10 w-10 items-center justify-center rounded-full bg-red-50"
                     >
                         <Trash2
@@ -80,7 +129,7 @@ export default function VideoDetailScreen() {
                     <PrimaryButton
                         text="Share"
                         icon={<Share2 size={18} color="#fff" />}
-                        onPress={() => { }}
+                        onPress={() => { handleShare() }}
                     />
                 </View>
             </View>
